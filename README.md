@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/fission-suite/get-ipfs.svg?branch=master)](https://travis-ci.org/fission-suite/get-ipfs)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/fission-suite/blob/master/LICENSE)
-[![Maintainability](https://api.codeclimate.com/v1/badges/44fb6a8a0cfd88bc41ef/maintainability)](https://codeclimate.com/github/fission-suite/get-ipfs/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8de358f51066211e246c/maintainability)](https://codeclimate.com/github/fission-suite/get-ipfs/maintainability)
 [![Built by FISSION](https://img.shields.io/badge/⌘-Built_by_FISSION-purple.svg)](https://fission.codes)
 [![Discord](https://img.shields.io/discord/478735028319158273.svg)](https://discord.gg/zAQBDEq)
 
