@@ -1,4 +1,3 @@
-// import IPFS from 'typestub-ipfs'
 import ipfs from './@types'
 
 export type config = {
