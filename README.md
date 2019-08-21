@@ -9,9 +9,15 @@
 [![Discord](https://img.shields.io/discord/478735028319158273.svg)](https://discord.gg/zAQBDEq)
 [![Discourse](https://img.shields.io/discourse/https/talk.fission.codes/topics)](https://talk.fission.codes)
 
-Utility to get js-ipfs with fallbacks
+Utility to get ipfs instance with fallbacks. 
 
-## To Use
+Attempts to load ipfs in the following order and returns the result in a Promise:
+1. `window.ipfs.enable`: the current `window.ipfs` api. Available if the user is using Opera or has the ipfs-companion extension installed.
+2. `window.ipfs`: the old `window.ipfs` api. Does not include enabling permissions all at once.
+3. `js-ipfs`: an in-browser ipfs node that communicates via WebRTC/Websockets. The `js-ipfs` code is only loaded if required. 
+
+
+## Usage
 ```
 import getIpfs from 'get-ipfs'
 
@@ -22,7 +28,7 @@ const ipfs = await getIpfs([config])
 ```
 {
   // `permissions` are enabled if the browser is ipfs-capable (Opera or extension)
-  // passed to `window.ipfs.enable`
+  // passed to `window.ipfs.enable` if available
   // prevents a permission dialog from appearing for every action
   permissions: ['id', 'version', 'add', 'cat', 'dag'],
 
