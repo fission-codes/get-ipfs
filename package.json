@@ -1,7 +1,7 @@
 {
   "name": "get-ipfs",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Utility to get js-ipfs with fallbacks",
   "keywords": [],
   "main": "dist/get-ipfs.umd.js",
   "module": "dist/get-ipfs.es5.js",
