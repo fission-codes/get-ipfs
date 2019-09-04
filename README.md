@@ -9,7 +9,7 @@
 [![Discord](https://img.shields.io/discord/478735028319158273.svg)](https://discord.gg/zAQBDEq)
 [![Discourse](https://img.shields.io/discourse/https/talk.fission.codes/topics)](https://talk.fission.codes)
 
-A one-stop show for loading an ipfs instance into a webpage.
+A one-stop shop for loading an ipfs instance into a webpage.
 
 Attempts to load ipfs in the following order and returns the result in a Promise:
 1. `window.ipfs.enable`: the current `window.ipfs` api. Available if the user is using Opera or has the ipfs-companion extension installed.
