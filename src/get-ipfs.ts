@@ -39,8 +39,8 @@ const addBootstrapPeers = async (ipfs: ipfs, peers?: string[]) => {
       await ipfs.stop()
     }
     await Promise.all(peers.map(p => ipfs.bootstrap.add(p)))
-    await ipfs.start()
   }
+  await ipfs.start()
   return ipfs
 }
 
