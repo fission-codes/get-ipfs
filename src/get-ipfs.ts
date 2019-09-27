@@ -2,7 +2,9 @@ import ipfs from './@types'
 
 export type config = {
   permissions?: string[]
-  bootstrap?: string[]
+  peers?: string[]
+  browserPeers?: string[]
+  localPeers?: string[]
 }
 
 type IpfsWindow = {
@@ -16,12 +18,12 @@ type EnableOptions = {
 
 interface IpfsPkg extends ipfs {
   enable?: (options: EnableOptions) => Promise<ipfs>
-  create?: (options: ipfs.Options) => Promise<ipfs>
+  create?: (options?: ipfs.Options) => Promise<ipfs>
 }
 
 let ipfsInstance: ipfs | null = null
 
-const DEFAULT_PERMISSIONS = ['id', 'version', 'add', 'cat', 'dag']
+const DEFAULT_PERMISSIONS = ['id', 'version', 'add', 'cat', 'dag', 'swarm']
 const normalizePermissions = (permissions = DEFAULT_PERMISSIONS) => {
   if (permissions.indexOf('id') < 0) {
     permissions.push('id')
@@ -32,15 +34,16 @@ const normalizePermissions = (permissions = DEFAULT_PERMISSIONS) => {
   return permissions
 }
 
-const addBootstrapPeers = async (ipfs: ipfs, peers?: string[]) => {
-  if (peers && peers.length > 0) {
-    const isOnline = ipfs.isOnline()
-    if (isOnline) {
-      await ipfs.stop()
-    }
-    await Promise.all(peers.map(p => ipfs.bootstrap.add(p)))
-  }
-  await ipfs.start()
+const connectPeers = async (ipfs: ipfs, peers: string[] = []) => {
+  await Promise.all(
+    peers.map(async p => {
+      try {
+        await ipfs.swarm.connect(p)
+      } catch (err) {
+        console.log('Could not connect to peer: ', p)
+      }
+    })
+  )
   return ipfs
 }
 
@@ -71,7 +74,6 @@ export const loadWindowIpfs = async (config: config): Promise<ipfs | null> => {
     }
     const isWorking = await ipfsIsWorking(ipfs)
     if (isWorking) {
-      await addBootstrapPeers(ipfs, config.bootstrap)
       return ipfs as ipfs
     } else {
       return null
@@ -103,8 +105,7 @@ export const loadJsIpfs = async (config: config): Promise<ipfs | null> => {
   if (!ipfsPkg || !ipfsPkg.create) {
     return null
   }
-  const ipfs = await ipfsPkg.create({ start: false })
-  await addBootstrapPeers(ipfs, config.bootstrap)
+  const ipfs = await ipfsPkg.create()
   const isWorking = await ipfsIsWorking(ipfs)
 
   if (isWorking) {
@@ -120,17 +121,23 @@ const getIpfs = async (config: config = {}): Promise<ipfs> => {
     return ipfsInstance
   }
 
+  let peers = config.peers || []
   ipfsInstance = await loadWindowIpfs(config)
   if (ipfsInstance) {
     console.log('window.ipfs is available!')
+    peers = peers.concat(config.localPeers || [])
   } else {
     console.log('window.ipfs is not available, downloading from CDN...')
     ipfsInstance = await loadJsIpfs(config)
+    peers = peers.concat(config.browserPeers || [])
   }
 
   if (!ipfsInstance) {
     throw new Error('Could not load IPFS')
   }
+
+  await connectPeers(ipfsInstance, peers)
+  console.log('connected to: ', peers)
 
   return ipfsInstance
 }

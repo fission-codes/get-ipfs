@@ -31,11 +31,18 @@ const ipfs = await getIpfs([config])
   // `permissions` are enabled if the browser is ipfs-capable (Opera or extension)
   // passed to `window.ipfs.enable` if available
   // prevents a permission dialog from appearing for every action
-  permissions: ['id', 'version', 'add', 'cat', 'dag'],
+  permissions: ['id', 'version', 'add', 'cat', 'dag', 'swarm'],
 
-  // `bootstrap` is a list of peers to be added to the node's bootstrap list
+  // `peers` is a list of peer multiaddrs to connect to on load
   // to work with the `js-ipfs` fallback, these must have available websocket ports
-  bootstrap: []
+  peers: []
+
+  // `browserPeers` is a list of peer multiaddrs to connect to only on fallback to an in-browser js-ipfs daemon
+  // note: these must be secure websocket or WebRTC addresses
+  browserPeers: []
+
+  // `localPeers` is a list of peer multiaddrs to connect to if using a local ipfs daemon (through ipfs companion for instance)
+  localPeers: []
 }
 ```
 
