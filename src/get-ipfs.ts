@@ -85,7 +85,7 @@ export const loadWindowIpfs = async (config: config): Promise<ipfs | null> => {
 export const loadIpfsScript = (): Promise<void> => {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script')
-    script.src = 'https://unpkg.com/ipfs/dist/index.min.js'
+    script.src = 'https://unpkg.com/ipfs@0.38.0/dist/index.min.js'
     script.onload = async () => {
       return resolve()
     }
