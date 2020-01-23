@@ -56,3 +56,5 @@ const ipfs = await getIpfs([config])
 This repo currently makes use of types from [typestub-ipfs](https://github.com/beenotung/typestub-ipfs). 
 
 Give your support [here](https://github.com/ipfs/js-ipfs/issues/1166) for types to be merged into `js-ipfs` or `DefinitelyTyped`.
+
+This repo is similar to [ipfs-provider](https://github.com/ipfs-shipyard/ipfs-provider). One big difference is that `ipfs-provider` doesn't use ES6 syntax so it can't be used without a module bundler.
