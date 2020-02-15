@@ -15,18 +15,22 @@ A one-stop shop for loading an ipfs instance into a webpage.
 Attempts to load ipfs in the following order and returns the result in a Promise:
 1. `window.ipfs.enable`: the current `window.ipfs` api. Available if the user is using Opera or has the ipfs-companion extension installed.
 2. `window.ipfs`: the old `window.ipfs` api. Does not include enabling permissions all at once.
-3. `js-ipfs`: an in-browser ipfs node that communicates via WebRTC/Websockets. The `js-ipfs` code is only loaded if required. 
+3. `js-ipfs`: an in-browser ipfs node that communicates via WebRTC/Websockets. The `js-ipfs` code is only loaded if required. Can be configured using the `jsIpfs` setting.
+
 
 
 ## Usage
-```
+
+```js
 import getIpfs from 'get-ipfs'
 
-const ipfs = await getIpfs([config])
+const ipfs = await getIpfs(config)
 ```
 
-### Config 
-```
+
+### Config
+
+```js
 {
   // `permissions` are enabled if the browser is ipfs-capable (Opera or extension)
   // passed to `window.ipfs.enable` if available
@@ -35,25 +39,37 @@ const ipfs = await getIpfs([config])
 
   // `peers` is a list of peer multiaddrs to connect to on load
   // to work with the `js-ipfs` fallback, these must have available websocket ports
-  peers: []
+  peers: [],
 
   // `browserPeers` is a list of peer multiaddrs to connect to only on fallback to an in-browser js-ipfs daemon
   // note: these must be secure websocket or WebRTC addresses
-  browserPeers: []
+  browserPeers: [],
 
   // `localPeers` is a list of peer multiaddrs to connect to if using a local ipfs daemon (through ipfs companion for instance)
-  localPeers: []
+  localPeers: [],
+
+  // (optional) Configure how to load js-ipfs. By default this'll be an unpkg url that points to the latest minified distribution.
+  jsIpfs: "https://unpkg.com/ipfs@latest/dist/index.min.js",
+  jsIpfs: async () => await import("ipfs"),
+  jsIpfs: () => Promise.resolve(Ipfs)
 }
 ```
 
+
+
 ## Testing
+
 ### Tests coming soon!!
+
 - Run `npm i`
 - Run tests with: `npm run test`
 - Continuously watch with `npm run test:watch`
 
+
+
 ## Notes
-This repo currently makes use of types from [typestub-ipfs](https://github.com/beenotung/typestub-ipfs). 
+
+This repo currently makes use of types from [typestub-ipfs](https://github.com/beenotung/typestub-ipfs).
 
 Give your support [here](https://github.com/ipfs/js-ipfs/issues/1166) for types to be merged into `js-ipfs` or `DefinitelyTyped`.
 
