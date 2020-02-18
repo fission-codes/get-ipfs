@@ -117,5 +117,7 @@
     "typedoc": "^0.16.9",
     "typescript": "^3.7.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "multiaddr": "^7.3.1"
+  }
 }

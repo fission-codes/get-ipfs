@@ -1,3 +1,4 @@
+import Multiaddr from 'multiaddr'
 import ipfs from './@types'
 
 
@@ -106,7 +107,9 @@ export async function loadJsIpfs(config: config): Promise<ipfs | null> {
   }})()
 
   if (!ipfsPkg?.create) return null
-  const ipfs = await ipfsPkg.create()
+  const ipfs = await ipfsPkg.create({
+    config: { Addresses: { Swarm: [] } }
+  })
   return await ipfsIsWorking(ipfs) ? ipfs : null
 }
 
@@ -130,11 +133,15 @@ export async function loadWindowIpfs(config: config): Promise<ipfs | null> {
 // ㊙️
 
 
+declare const Multiaddr: any;
+
+
 async function connectPeers(ipfs: ipfs, peers: string[] = []) {
   await Promise.all(
     peers.map(async p => {
       try {
-        await ipfs.swarm.connect(p)
+        const addr = Multiaddr(p)
+        await ipfs.swarm.connect(addr)
       } catch (err) {
         console.log('Could not connect to peer: ', p)
       }
