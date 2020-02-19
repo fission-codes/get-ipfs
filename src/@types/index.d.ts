@@ -2,7 +2,6 @@
 // Will submit PR for needed changes
 
 import { EventEmitter } from 'events'
-import Multiaddr from 'multiaddr'
 
 export as namespace ipfs
 
@@ -69,6 +68,10 @@ declare namespace IPFS {
     emptyRepo?: boolean
     bits?: number
     log?: Function
+  }
+
+  export interface Multiaddr {
+    buffer: Uint8Array
   }
 
   export type Multihash = any | string
