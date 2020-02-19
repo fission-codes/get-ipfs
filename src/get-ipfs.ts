@@ -1,4 +1,3 @@
-import Multiaddr from 'multiaddr'
 import ipfs from './@types'
 
 
@@ -53,28 +52,23 @@ const normalizePermissions = (permissions = DEFAULT_PERMISSIONS) => {
 // Default
 // =======
 
-const getIpfs = async (config: config = {}): Promise<ipfs> => {
+const getIpfs = async (config: config = {}) => {
   if (ipfsInstance) return ipfsInstance
 
   // If not set up before, start flow.
-  let peers = config.peers || []
+  config = { ...config, peers: config.peers || [] }
   ipfsInstance = await loadWindowIpfs(config)
 
   if (ipfsInstance) {
     console.log('window.ipfs is available!')
-    peers = peers.concat(config.localPeers || [])
+    const peers = (config.peers || []).concat(config.localPeers || [])
+    await connectPeers(ipfsInstance, peers)
+
   } else {
     console.log('window.ipfs is not available, loading js-ipfs...')
     ipfsInstance = await loadJsIpfs(config)
-    peers = peers.concat(config.browserPeers || [])
-  }
 
-  if (!ipfsInstance) {
-    throw new Error('Could not load IPFS')
   }
-
-  await connectPeers(ipfsInstance, peers)
-  console.log('Connected to: ', peers)
 
   return ipfsInstance
 }
@@ -107,9 +101,8 @@ export async function loadJsIpfs(config: config): Promise<ipfs | null> {
   }})()
 
   if (!ipfsPkg?.create) return null
-  const ipfs = await ipfsPkg.create({
-    config: { Addresses: { Swarm: [] } }
-  })
+  const peers = (config.peers || []).concat(config.browserPeers || [])
+  const ipfs = await ipfsPkg.create({ config: { Addresses: { Swarm: peers, Bootstrap: peers }}})
   return await ipfsIsWorking(ipfs) ? ipfs : null
 }
 
@@ -133,20 +126,23 @@ export async function loadWindowIpfs(config: config): Promise<ipfs | null> {
 // ㊙️
 
 
-declare const Multiaddr: any;
+async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<ipfs> {
+  if (!ipfsInstance) {
+    throw new Error('Could not load IPFS')
+  }
 
-
-async function connectPeers(ipfs: ipfs, peers: string[] = []) {
   await Promise.all(
     peers.map(async p => {
       try {
-        const addr = Multiaddr(p)
-        await ipfs.swarm.connect(addr)
+        await ipfs.swarm.connect(p)
+        console.log('Connected to:', peers)
       } catch (err) {
-        console.log('Could not connect to peer: ', p)
+        console.log('Could not connect to peer:', p)
+        console.error(err)
       }
     })
   )
+
   return ipfs
 }
 
