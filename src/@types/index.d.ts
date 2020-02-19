@@ -72,6 +72,7 @@ declare namespace IPFS {
 
   export interface Multiaddr {
     buffer: Uint8Array
+    nodeAddress: () => ({ address: string, port: number })
   }
 
   export type Multihash = any | string

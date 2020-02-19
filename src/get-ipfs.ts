@@ -135,12 +135,22 @@ async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<ipfs> {
     peers.map(async p => {
       try {
         await ipfs.swarm.connect(p)
-        console.log('Connected to:', peers)
       } catch (err) {
         console.log('Could not connect to peer:', p)
         console.error(err)
       }
     })
+  )
+
+  const connectedPeers = await ipfs.swarm.peers()
+  console.log(
+    'Connected to:',
+    connectedPeers
+      .map(peer => {
+        const n = peer.addr.nodeAddress()
+        return `${n.address}:${n.port}`
+      })
+      .join(", ")
   )
 
   return ipfs
