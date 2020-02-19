@@ -102,7 +102,7 @@ export async function loadJsIpfs(config: config): Promise<ipfs | null> {
 
   if (!ipfsPkg?.create) return null
   const peers = (config.peers || []).concat(config.browserPeers || [])
-  const ipfs = await ipfsPkg.create({ config: { Addresses: { Swarm: peers, Bootstrap: peers }}})
+  const ipfs = await ipfsPkg.create({ config: { Addresses: { Swarm: peers }}})
   return await ipfsIsWorking(ipfs) ? ipfs : null
 }
 
