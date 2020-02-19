@@ -56,20 +56,25 @@ const getIpfs = async (config: config = {}) => {
   if (ipfsInstance) return ipfsInstance
 
   // If not set up before, start flow.
-  config = { ...config, peers: config.peers || [] }
+  let peers = config.peers || []
   ipfsInstance = await loadWindowIpfs(config)
 
   if (ipfsInstance) {
     console.log('window.ipfs is available!')
-    const peers = (config.peers || []).concat(config.localPeers || [])
-    await connectPeers(ipfsInstance, peers)
+    peers = peers.concat(config.localPeers || [])
 
   } else {
     console.log('window.ipfs is not available, loading js-ipfs...')
     ipfsInstance = await loadJsIpfs(config)
+    peers = peers.concat(config.browserPeers || [])
 
   }
 
+  if (!ipfsInstance) {
+    throw new Error('Could not load IPFS')
+  }
+
+  await connectPeers(ipfsInstance, peers)
   return ipfsInstance
 }
 
@@ -101,8 +106,7 @@ export async function loadJsIpfs(config: config): Promise<ipfs | null> {
   }})()
 
   if (!ipfsPkg?.create) return null
-  const peers = (config.peers || []).concat(config.browserPeers || [])
-  const ipfs = await ipfsPkg.create({ config: { Addresses: { Swarm: peers }}})
+  const ipfs = await ipfsPkg.create({ config: { Addresses: { Swarm: [] }}})
   return await ipfsIsWorking(ipfs) ? ipfs : null
 }
 
@@ -127,10 +131,6 @@ export async function loadWindowIpfs(config: config): Promise<ipfs | null> {
 
 
 async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<ipfs> {
-  if (!ipfsInstance) {
-    throw new Error('Could not load IPFS')
-  }
-
   await Promise.all(
     peers.map(async p => {
       try {
