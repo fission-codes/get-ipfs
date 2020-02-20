@@ -25,14 +25,12 @@ declare class IPFS extends EventEmitter {
   isOnline(): boolean
 
   version(options: any, callback: (error: Error, version: IPFS.Version) => void): void
-  version(options: any): Promise<IPFS.Version>
+  version(options?: any): Promise<IPFS.Version>
   version(callback: (error: Error, version: IPFS.Version) => void): void
-  version(): Promise<IPFS.Version>
 
   id(options: any, callback: (error: Error, version: IPFS.Id) => void): void
-  id(options: any): Promise<IPFS.Id>
+  id(options?: any): Promise<IPFS.Id>
   id(callback: (error: Error, version: IPFS.Id) => void): void
-  id(): Promise<IPFS.Id>
 
   repo: IPFS.RepoAPI
   bootstrap: any
@@ -138,9 +136,8 @@ declare namespace IPFS {
     createPullStream(options: any): any
 
     add(data: FileContent, options: any, callback: Callback<IPFSFile[]>): void
-    add(data: FileContent, options: any): Promise<IPFSFile[]>
+    add(data: FileContent, options?: any): Promise<IPFSFile[]>
     add(data: FileContent, callback: Callback<IPFSFile[]>): void
-    add(data: FileContent): Promise<IPFSFile[]>
 
     cat(hash: Multihash, callback: Callback<FileContent>): void
     cat(hash: Multihash): Promise<FileContent>
@@ -172,9 +169,8 @@ declare namespace IPFS {
 
   export interface SwarmAPI {
     peers(options: PeersOptions, callback: Callback<Peer[]>): void
-    peers(options: PeersOptions): Promise<Peer[]>
+    peers(options?: PeersOptions): Promise<Peer[]>
     peers(callback: Callback<Peer[]>): void
-    peers(): Promise<Peer[]>
 
     addrs(callback: Callback<PeerInfo[]>): void
     addrs(): Promise<PeerInfo[]>
@@ -220,9 +216,8 @@ declare namespace IPFS {
       options: GetObjectOptions,
       callback: Callback<any>
     ): void
-    addLink(multihash: Multihash, link: DAGLink, options: GetObjectOptions): Promise<any>
+    addLink(multihash: Multihash, link: DAGLink, options?: GetObjectOptions): Promise<any>
     addLink(multihash: Multihash, link: DAGLink, callback: Callback<any>): void
-    addLink(multihash: Multihash, link: DAGLink): Promise<any>
 
     rmLink(
       multihash: Multihash,
@@ -230,9 +225,8 @@ declare namespace IPFS {
       options: GetObjectOptions,
       callback: Callback<any>
     ): void
-    rmLink(multihash: Multihash, linkRef: DAGLinkRef, options: GetObjectOptions): Promise<any>
+    rmLink(multihash: Multihash, linkRef: DAGLinkRef, options?: GetObjectOptions): Promise<any>
     rmLink(multihash: Multihash, linkRef: DAGLinkRef, callback: Callback<any>): void
-    rmLink(multihash: Multihash, linkRef: DAGLinkRef): Promise<any>
 
     appendData(
       multihash: Multihash,
@@ -240,9 +234,8 @@ declare namespace IPFS {
       options: GetObjectOptions,
       callback: Callback<any>
     ): void
-    appendData(multihash: Multihash, data: any, options: GetObjectOptions): Promise<any>
+    appendData(multihash: Multihash, data: any, options?: GetObjectOptions): Promise<any>
     appendData(multihash: Multihash, data: any, callback: Callback<any>): void
-    appendData(multihash: Multihash, data: any): Promise<any>
 
     setData(
       multihash: Multihash,
@@ -250,9 +243,8 @@ declare namespace IPFS {
       options: GetObjectOptions,
       callback: Callback<any>
     ): void
-    setData(multihash: Multihash, data: any, options: GetObjectOptions): Promise<any>
+    setData(multihash: Multihash, data: any, options?: GetObjectOptions): Promise<any>
     setData(multihash: Multihash, data: any, callback: Callback<any>): void
-    setData(multihash: Multihash, data: any): Promise<any>
   }
 
   export interface ObjectAPI {
@@ -261,29 +253,24 @@ declare namespace IPFS {
     'new'(): Promise<DAGNode>
 
     put(obj: Obj, options: PutObjectOptions, callback: Callback<any>): void
-    put(obj: Obj, options: PutObjectOptions): Promise<any>
+    put(obj: Obj, options?: PutObjectOptions): Promise<any>
     put(obj: Obj, callback: Callback<any>): void
-    put(obj: Obj): Promise<any>
 
     get(multihash: Multihash, options: GetObjectOptions, callback: Callback<any>): void
-    get(multihash: Multihash, options: GetObjectOptions): Promise<any>
+    get(multihash: Multihash, options?: GetObjectOptions): Promise<any>
     get(multihash: Multihash, callback: Callback<any>): void
-    get(multihash: Multihash): Promise<any>
 
     data(multihash: Multihash, options: GetObjectOptions, callback: Callback<any>): void
-    data(multihash: Multihash, options: GetObjectOptions): Promise<any>
+    data(multihash: Multihash, options?: GetObjectOptions): Promise<any>
     data(multihash: Multihash, callback: Callback<any>): void
-    data(multihash: Multihash): Promise<any>
 
     links(multihash: Multihash, options: GetObjectOptions, callback: Callback<DAGLink[]>): void
-    links(multihash: Multihash, options: GetObjectOptions): Promise<DAGLink[]>
+    links(multihash: Multihash, options?: GetObjectOptions): Promise<DAGLink[]>
     links(multihash: Multihash, callback: Callback<DAGLink[]>): void
-    links(multihash: Multihash): Promise<DAGLink[]>
 
     stat(multihash: Multihash, options: GetObjectOptions, callback: Callback<ObjectStat>): void
-    stat(multihash: Multihash, options: GetObjectOptions): Promise<ObjectStat>
+    stat(multihash: Multihash, options?: GetObjectOptions): Promise<ObjectStat>
     stat(multihash: Multihash, callback: Callback<ObjectStat>): void
-    stat(multihash: Multihash): Promise<ObjectStat>
 
     patch: ObjectPatchAPI
   }
@@ -292,21 +279,13 @@ declare namespace IPFS {
     put(dagNode: any, options: any, callback: Callback<any>): void
     put(dagNode: any, options: any): Promise<any>
 
-    get(cid: string | CID, path: string, options: any, callback: Callback<any>): void
-    get(cid: string | CID, path: string, options: any): Promise<any>
-    get(cid: string | CID, path: string, callback: Callback<any>): void
-    get(cid: string | CID, path: string): Promise<any>
+    get(cid: string | CID, path: string, callback: Callback<any>, options?: any): void
+    get(cid: string | CID, path?: string, options?: any): Promise<any>
     get(cid: string | CID, callback: Callback<any>): void
-    get(cid: string | CID): Promise<any>
 
-    tree(cid: string | CID, path: string, options: any, callback: Callback<any>): void
-    tree(cid: string | CID, path: string, options: any): Promise<any>
-    tree(cid: string | CID, path: string, callback: Callback<any>): void
-    tree(cid: string | CID, path: string): Promise<any>
-    tree(cid: string | CID, options: any, callback: Callback<any>): void
-    tree(cid: string | CID, options: any): Promise<any>
+    tree(cid: string | CID, path: string, callback: Callback<any>, options?: any): void
+    tree(cid: string | CID, path?: string, options?: any): Promise<any>
     tree(cid: string | CID, callback: Callback<any>): void
-    tree(cid: string | CID): Promise<any>
   }
 
   export interface Pubsub {
@@ -319,8 +298,7 @@ declare namespace IPFS {
     publish(topic: any, data: any, callback: Callback<any>): void
     publish(topic: any, data: any): Promise<any>
 
-    ls(callback: Callback<any>): void
-    ls(): Promise<any>
+    ls(callback?: Callback<any>): void
 
     peers(topic: any, callback: Callback<any>): void
     peers(topic: any): Promise<any>
@@ -352,9 +330,8 @@ declare namespace IPFS {
   export type KeyType = string | Buffer | CID | any
   export interface Bitswap {
     wantlist(peerId: string, callback: Callback<WantList>): void
-    wantlist(peerId: string): Promise<WantList>
+    wantlist(peerId?: string): Promise<WantList>
     wantlist(callback: Callback<WantList>): void
-    wantlist(): Promise<WantList>
 
     stat(callback: Callback<Stat>): void
     stat(): Promise<Stat>
