@@ -131,28 +131,22 @@ export async function loadWindowIpfs(config: config): Promise<ipfs | null> {
 
 
 async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<ipfs> {
-  await Promise.all(
-    peers.map(async p => {
-      try {
-        await ipfs.swarm.connect(p)
-      } catch (err) {
-        console.log('Could not connect to peer:', p)
-        console.error(err)
-      }
-    })
-  )
+  const connectedPeers = await Promise.all(peers.map(async p => {
+    try {
+      await ipfs.swarm.connect(p)
+      return p
+    } catch (err) {
+      console.log('Could not connect to peer:', p)
+      console.error(err)
+      return null
+    }
 
-  const connectedPeers = await ipfs.swarm.peers()
-  console.log(
-    'Connected to:',
-    connectedPeers
-      .map(peer => {
-        const n = peer.addr.nodeAddress()
-        return `${n.address}:${n.port}`
-      })
-      .join(", ")
-  )
+  })).then(list => list.filter(
+    a => !!a
 
+  ))
+
+  console.log('Connected to:', connectedPeers.join(", "))
   return ipfs
 }
 
