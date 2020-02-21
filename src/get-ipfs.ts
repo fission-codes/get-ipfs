@@ -74,7 +74,8 @@ const getIpfs = async (config: config = {}) => {
     throw new Error('Could not load IPFS')
   }
 
-  await connectPeers(ipfsInstance, peers)
+  await retryConnect(ipfsInstance, peers, 2)
+
   return ipfsInstance
 }
 
@@ -129,8 +130,17 @@ export async function loadWindowIpfs(config: config): Promise<ipfs | null> {
 
 // ㊙️
 
+async function retryConnect(ipfs: ipfs, peers: string[] = [], tries: number): Promise<ipfs> {
+  let connected = await connectPeers(ipfs, peers)
+  if(connected.length < 1){
+    connected = await connectPeers(ipfs, peers)
+  }
+  console.log('Connected to: ', connected.join(', '))
 
-async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<ipfs> {
+  return ipfs
+}
+
+async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<string[]> {
   const connectedPeers = await Promise.all(peers.map(async p => {
     try {
       await ipfs.swarm.connect(p)
@@ -143,11 +153,9 @@ async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<ipfs> {
 
   })).then(list => list.filter(
     a => !!a
+  )) as string[]
 
-  ))
-
-  console.log('Connected to:', connectedPeers.join(", "))
-  return ipfs
+  return connectedPeers
 }
 
 
