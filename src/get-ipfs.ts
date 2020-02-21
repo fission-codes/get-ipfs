@@ -130,15 +130,22 @@ export async function loadWindowIpfs(config: config): Promise<ipfs | null> {
 
 // ㊙️
 
-async function retryConnect(ipfs: ipfs, peers: string[] = [], tries: number): Promise<ipfs> {
-  let connected = await connectPeers(ipfs, peers)
-  if(connected.length < 1){
-    connected = await connectPeers(ipfs, peers)
+async function retryConnect(ipfs: ipfs, peers: string[] = [], tries: number, timeout: number = 0): Promise<ipfs> {
+  if(tries < 1){
+    console.log('Could not connect to any of the requested peers')
+    return ipfs
   }
-  console.log('Connected to: ', connected.join(', '))
-
+  let connected = await connectPeers(ipfs, peers)
+  if(connected.length > 0) {
+    console.log('Connected to: ', connected.join(', '))
+  }else {
+    await waitThenDo(timeout, async () => {
+      await retryConnect(ipfs, peers, tries - 1, timeout)
+    })
+  }
   return ipfs
 }
+
 
 async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<string[]> {
   const connectedPeers = await Promise.all(peers.map(async p => {
@@ -156,6 +163,14 @@ async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<string[]>
   )) as string[]
 
   return connectedPeers
+}
+
+
+async function waitThenDo(timeout: number, fn: () => Promise<void>){
+  return new Promise(async (resolve) => {
+    setTimeout(fn, timeout)
+    resolve()
+  })
 }
 
 
