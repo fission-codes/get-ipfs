@@ -1,6 +1,6 @@
 {
   "name": "get-ipfs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Utility to get js-ipfs with fallbacks",
   "keywords": [],
   "main": "dist/get-ipfs.umd.js",
@@ -12,7 +12,7 @@
   "author": "Daniel Holmgren <dtholmgren@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/fission-suite/get-ipfs/"
   },
   "license": "MIT",
   "engines": {
