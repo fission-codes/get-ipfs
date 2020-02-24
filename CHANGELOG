@@ -1,0 +1,11 @@
+# Changelog
+
+## 1.1.0
+
+Allows you to define your own version of js-ipfs instead of the predefined fallback. Before it would load js-ipfs v0.38, now it loads the latest version from unpkg by default, which you can override as follows using this configuration property:
+
+```
+jsIpfs: "https://unpkg.com/ipfs@latest/dist/index.min.js",
+jsIpfs: async () => await import("ipfs"),
+jsIpfs: () => Promise.resolve(Ipfs)
+```
