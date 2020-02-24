@@ -12,7 +12,7 @@
   "author": "Daniel Holmgren <dtholmgren@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/fission-suite/get-ipfs/"
   },
   "license": "MIT",
   "engines": {
