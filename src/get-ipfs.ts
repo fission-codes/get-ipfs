@@ -86,13 +86,15 @@ export default getIpfs
 // 🛠
 
 
-export async function connectPeers({
+export async function connectPeers(args: {
   ipfs: ipfs,
   peers: string[],
-  remainingTries?: number = 0,
-  timeout?: number = 0
+  remainingTries?: number,
+  timeout?: number
 }): Promise<ipfs> {
-  if (remainingTries < 1) {
+  const { ipfs, peers, remainingTries, timeout } = args
+
+  if (!remainingTries || remainingTries < 1) {
     console.log('Could not connect to any of the requested peers')
     return ipfs
   }
@@ -102,7 +104,7 @@ export async function connectPeers({
   if (connected.length > 0) {
     console.log(`Connected to: ${connected.join(', ')}`)
   } else {
-    await waitThenDo(timeout, async () => {
+    await waitThenDo(timeout || 0, async () => {
       await connectPeers({ ipfs, peers, remainingTries: remainingTries - 1, timeout })
     })
   }
