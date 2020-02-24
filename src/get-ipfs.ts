@@ -31,7 +31,7 @@ interface IpfsPkg extends ipfs {
 // Context
 // -------
 
-const UNPKG_URL = "https://unpkg.com/ipfs@latest/dist/index.min.js"
+const UNPKG_URL = 'https://unpkg.com/ipfs@latest/dist/index.min.js'
 let ipfsInstance: ipfs | null = null
 
 
@@ -74,8 +74,7 @@ const getIpfs = async (config: config = {}) => {
     throw new Error('Could not load IPFS')
   }
 
-  await retryConnect(ipfsInstance, peers, 2)
-
+  await connectPeers({ ipfs: ipfsInstance, peers: peers, remainingTries: 2})
   return ipfsInstance
 }
 
@@ -85,6 +84,31 @@ export default getIpfs
 
 
 // 🛠
+
+
+export async function connectPeers({
+  ipfs: ipfs,
+  peers: string[],
+  remainingTries?: number = 0,
+  timeout?: number = 0
+}): Promise<ipfs> {
+  if (remainingTries < 1) {
+    console.log('Could not connect to any of the requested peers')
+    return ipfs
+  }
+
+  let connected = await _connectPeers(ipfs, peers)
+
+  if (connected.length > 0) {
+    console.log(`Connected to: ${connected.join(', ')}`)
+  } else {
+    await waitThenDo(timeout, async () => {
+      await connectPeers({ ipfs, peers, remainingTries: remainingTries - 1, timeout })
+    })
+  }
+
+  return ipfs
+}
 
 
 export async function ipfsIsWorking(ipfs?: ipfs): Promise<boolean> {
@@ -101,8 +125,8 @@ export async function ipfsIsWorking(ipfs?: ipfs): Promise<boolean> {
 
 export async function loadJsIpfs(config: config): Promise<ipfs | null> {
   const ipfsPkg = await (() => { switch (typeof config.jsIpfs) {
-    case "function":  return config.jsIpfs()
-    case "string":    return loadJsIpfsThroughScript(config.jsIpfs)
+    case 'function':  return config.jsIpfs()
+    case 'string':    return loadJsIpfsThroughScript(config.jsIpfs)
     default:          return loadJsIpfsThroughScript(UNPKG_URL)
   }})()
 
@@ -130,24 +154,8 @@ export async function loadWindowIpfs(config: config): Promise<ipfs | null> {
 
 // ㊙️
 
-async function retryConnect(ipfs: ipfs, peers: string[] = [], tries: number, timeout: number = 0): Promise<ipfs> {
-  if(tries < 1){
-    console.log('Could not connect to any of the requested peers')
-    return ipfs
-  }
-  let connected = await connectPeers(ipfs, peers)
-  if(connected.length > 0) {
-    console.log('Connected to: ', connected.join(', '))
-  }else {
-    await waitThenDo(timeout, async () => {
-      await retryConnect(ipfs, peers, tries - 1, timeout)
-    })
-  }
-  return ipfs
-}
 
-
-async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<string[]> {
+async function _connectPeers(ipfs: ipfs, peers: string[] = []): Promise<string[]> {
   const connectedPeers = await Promise.all(peers.map(async p => {
     try {
       await ipfs.swarm.connect(p)
@@ -163,14 +171,6 @@ async function connectPeers(ipfs: ipfs, peers: string[] = []): Promise<string[]>
   )) as string[]
 
   return connectedPeers
-}
-
-
-async function waitThenDo(timeout: number, fn: () => Promise<void>){
-  return new Promise(async (resolve) => {
-    setTimeout(fn, timeout)
-    resolve()
-  })
 }
 
 
@@ -192,5 +192,13 @@ function loadScript(src: string): Promise<void> {
     script.onload = async () => resolve()
     script.onerror = reject
     document.body.appendChild(script)
+  })
+}
+
+
+async function waitThenDo(timeout: number, fn: () => Promise<void>) {
+  return new Promise(async (resolve) => {
+    setTimeout(fn, timeout)
+    resolve()
   })
 }
