@@ -3,9 +3,7 @@
 
 import { EventEmitter } from 'events'
 
-export as namespace ipfs
-
-export = IPFS
+export default IPFS
 
 type Callback<T> = (error: Error, result?: T) => void
 

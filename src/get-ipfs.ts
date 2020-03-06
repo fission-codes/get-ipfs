@@ -1,4 +1,4 @@
-import ipfs from './@types'
+import ipfs from './types'
 
 
 // Types
