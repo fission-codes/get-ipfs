@@ -50,15 +50,10 @@ declare class IPFS extends EventEmitter {
   on(event: 'error', callback: (error: { message: any }) => void): this
   once(event: string, callback: () => void): this
 
-  add(data: IPFS.FileContent, options: any, callback: Callback<IPFS.IPFSFile[]>): void
-  add(data: IPFS.FileContent, options?: any): Promise<IPFS.IPFSFile[]>
-  add(data: IPFS.FileContent, callback: Callback<IPFS.IPFSFile[]>): void
+  add(data: IPFS.FileContent, options?: any): AsyncIterable<IPFS.IPFSFile>
+  cat(hash: IPFS.Multihash): AsyncIterable<IPFS.FileContent>
 
-  cat(hash: IPFS.Multihash, callback: Callback<IPFS.FileContent>): void
-  cat(hash: IPFS.Multihash): Promise<IPFS.FileContent>
-
-  get(hash: IPFS.Multihash, callback: Callback<IPFS.IPFSFile | IPFS.IPFSGetResult[]>): void
-  get(hash: IPFS.Multihash): Promise<IPFS.IPFSFile | IPFS.IPFSGetResult[]>
+  get(hash: IPFS.Multihash): AsyncIterable<IPFS.IPFSFile | IPFS.IPFSGetResult>
 }
 
 declare namespace IPFS {
@@ -143,17 +138,9 @@ declare namespace IPFS {
 
     createPullStream(options: any): any
 
-    add(data: FileContent, options: any, callback: Callback<IPFSFile[]>): void
-    add(data: FileContent, options?: any): Promise<IPFSFile[]>
-    add(data: FileContent, callback: Callback<IPFSFile[]>): void
-
-    cat(hash: Multihash, callback: Callback<FileContent>): void
-    cat(hash: Multihash): Promise<FileContent>
-
-    get(hash: Multihash, callback: Callback<IPFSFile | IPFSGetResult[]>): void
-    get(hash: Multihash): Promise<IPFSFile | IPFSGetResult[]>
-
-    getPull(hash: Multihash, callback: Callback<any>): void
+    add(data: IPFS.FileContent, options?: any): AsyncIterable<IPFS.IPFSFile>
+    cat(hash: IPFS.Multihash): AsyncIterable<IPFS.FileContent>
+    get(hash: IPFS.Multihash): AsyncIterable<IPFS.IPFSFile | IPFS.IPFSGetResult>
   }
 
   export interface PeersOptions {
