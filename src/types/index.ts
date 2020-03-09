@@ -49,6 +49,16 @@ declare class IPFS extends EventEmitter {
   on(event: string, callback: () => void): this
   on(event: 'error', callback: (error: { message: any }) => void): this
   once(event: string, callback: () => void): this
+
+  add(data: IPFS.FileContent, options: any, callback: Callback<IPFS.IPFSFile[]>): void
+  add(data: IPFS.FileContent, options?: any): Promise<IPFS.IPFSFile[]>
+  add(data: IPFS.FileContent, callback: Callback<IPFS.IPFSFile[]>): void
+
+  cat(hash: IPFS.Multihash, callback: Callback<IPFS.FileContent>): void
+  cat(hash: IPFS.Multihash): Promise<IPFS.FileContent>
+
+  get(hash: IPFS.Multihash, callback: Callback<IPFS.IPFSFile | IPFS.IPFSGetResult[]>): void
+  get(hash: IPFS.Multihash): Promise<IPFS.IPFSFile | IPFS.IPFSGetResult[]>
 }
 
 declare namespace IPFS {
