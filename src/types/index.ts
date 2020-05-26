@@ -138,9 +138,9 @@ declare namespace IPFS {
 
     createPullStream(options: any): any
 
-    add(data: IPFS.FileContent, options?: any): AsyncIterable<IPFS.IPFSFile>
-    cat(hash: IPFS.Multihash): AsyncIterable<IPFS.FileContent>
-    get(hash: IPFS.Multihash): AsyncIterable<IPFS.IPFSFile | IPFS.IPFSGetResult>
+    add(data: FileContent, options?: any): AsyncIterable<IPFSFile>
+    cat(hash: Multihash): AsyncIterable<FileContent>
+    get(hash: Multihash): AsyncIterable<IPFSFile | IPFSGetResult>
   }
 
   export interface PeersOptions {
